@@ -1,0 +1,90 @@
+Java Notes
+
+10/21/2020
+
+OOP 
+
+Java OOP Concepts
+
+OOP stands for Object-Oriented Programming.
+
+Procedural programming is about writing procedures or methods that perform operations on the data, while object-oriented programming is about creating objects that contain both data and methods.
+
+Object-oriented programming has several advantages over procedural programming:
+
+OOP is faster and easier to execute
+OOP provides a clear structure for the programs
+OOP helps to keep the Java code DRY "Don't Repeat Yourself", and makes the code easier to maintain, modify and debug
+OOP makes it possible to create full reusable applications with less code and shorter development time
+
+Java is platform independent and can be executed on any OS because it is Java is compiled and interpreted which is what makes it popular
+
+Java code is compiled and produces Java byte code
+
+Java source (.java) --> Java Compiler --> Java bytecode (.class)
+
+This byte code is then passed to the interpreter to run based on the system 
+
+the main method is the entry point of your java code 
+
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!"); 
+    }
+}
+
+Java is object oriented because you have to create objects in order to call the operations defined within a class (using the new keyword)
+
+Major Concepts of OOP: 
+
+- Abstraction
+* abstraction is the process of hiding certain details and showing only essential information to the user
+abstraction is achieved with either * abstract classes or * interfaces 
+* the abstract keyword is a non-access modifier used for classes and methods
+** abstract class is a restricted class that cannot be used to create objects
+** abstract method can only be used in an abstract class and it does not have a body
+Abstract class vs Interface
+
+Type of methods: Interface can have only abstract methods. Abstract class can have abstract and non-abstract methods. From Java 8, it can have default and static methods also.
+Final Variables: Variables declared in a Java interface are by default final. An abstract class may contain non-final variables.
+Type of variables: Abstract class can have final, non-final, static and non-static variables. Interface has only static and final variables.
+Implementation: Abstract class can provide the implementation of interface. Interface can’t provide the implementation of abstract class.
+Inheritance vs Abstraction: A Java interface can be implemented using keyword “implements” and abstract class can be extended using keyword “extends”.
+Multiple implementation: An interface can extend another Java interface only, an abstract class can extend another Java class and implement multiple Java interfaces.
+Accessibility of Data Members: Members of a Java interface are public by default. A Java abstract class can have class members like private, protected, etc.
+
+- Inheritance
+* a mechanism in Java by which one class is allowed to inherit the features (fields and methods) of another class
+* using key word extends will allow child class **code reusability** 
+
+
+
+- Encapsulation
+* the mechanism of wrapping data (variables) and code acting on the data together as a single unit. In encapsulation, the variables of a class will be hidden from other classes, and can be accessed only through the methods of their current class.
+Achieve encapsulation via private variables and use getters/setters to view/modify variable values 
+
+- Polymorphism
+* ability of an object tot take on many forms. ie when a parent class reference is used to refer to a child class object
+* any java object that can pass more than one is-a test is considered to be polymorphic
+in java all objects are polymorphic since any object will pass the is-a test for their own type and the class Object
+* the only way to access an object is through a reference variable. a reference variable can be of only one type
+* performing a single operation in different ways
+
+* Overloading
+multiple functions with the same name, but different signature (ie number of parameters, type of parameters, etc) 
+related to compile-time (static) polymorphism
+
+* Overriding
+- override the functionality of an existing method
+
+Exception Handling
+makes java program robust 
+
+checked exception 
+
+superclass of all checked exceptions is throwable
+
+unchecked exception 
+
+
+

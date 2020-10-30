@@ -1,0 +1,956 @@
+Unix Notes
+
+10/19/2020
+
+Unix Architecture and File System
+
+Store information on disks and other external media in units called files. Processes can then read them and write new ones if need be. Information stored in files must be persistent, that is, not be affected by process creation and termination. A file should only disappear when its owner explicitly removes it.
+Files are managed by the operating system. How they are structured, named, accessed, used, protected, and implemented are major topics in operating system design. As a whole, that part of the operating system dealing with files is known as the file system.
+
+What is Unix file system?
+Everything in Unix is a file or a representation.
+
+What is it made of?
+
+The physical disk can be logically divided into one or more partitions.
+The partition is usually made up of a file system.
+A file system generally contains rules and conventions, which has to be followed while structuring the files, their contents and how the file system physically stores files on disk.
+What are its components?
+
+The traditional Unix file system consists of the following components-
+
+A boot block, which usually holds lower memory addresses where the bootstrap program is stored. It forms the first sector of the memory.
+A super block, which contains the meta-data about the file system. Information such as the unit block size, free memory sector locations, size of the partition, and the information about the root directory is stored here.
+An inode block, which stores an array of inode numbers. Inode numbers or index numbers are unique (partition level) identifiers that store the actual meta-data of the file such as file size, file permissions, file ownership, pointers to actual data, time of last change and access etc.
+A data block, which stores the actual data in memory.
+
+File system nomenclature
+
+Regular File: Any normal file created without special permissions.
+
+Directory: A special file that can constitute of multiple regular or special files.
+
+Symbolic Link: A special file that stores the textual representation of the reference to another file (usually called as target), which may exist or not exist at all.
+
+Named Pipes: A special file which helps in the inter-process communication. This is different from anonymous pipes and used whenever some process belonging to a different user or having different permissions has to be piped.
+
+Socket File: A special file which helps in the inter-process communication. Unlike pipes, these can be full - duplexes.
+
+Device File: A file which can represent any device in Unix. They can either be character devices or block devices.
+
+
+
+- Various file systems and its functionality
+File system controls how data is stored and retrieved. Without one, there is no way to tell where data stops and ends. Separating the data into pieces with an identifier allows for data isolation and identification. 
+Each group of data is a "file". The structure and logic rules to manage the groups of data and their names is a FILE SYSTEM.
+
+System directories
+/ root directory
+/bin executable files available to all users
+/boot contains all the files needed for a successful booting process
+/dev device drivers
+/etc directory commands, config files, user lists, groups, ethernet, hosts
+/lib contains shared library files and sometimes other kernel related files
+/boot contains files for booting the system
+/home contains the home directory users and other accounts
+/media default mount point for removable devices
+/mnt used to mount other temporary file systems such as cdrom floppy drives etc
+/opt contains locally installed software
+/proc contains all processes marked as a file
+/root home directory for superuser root (system admin)
+/tmp holds temporary files used between systems boots
+/sbin system (or supersuser) binaries and contains fundamental utilities ie init
+/srv server data
+/sys in some linux distributions contains a syses visual filesystem
+/unix unix kernel in research unix and system V
+/usr miscellaneous purposes by many users includes administrative commands, shared files, lib files etc
+/include stores the development headers used throughout the system
+/var typically contains variable length
+/sbin contains binary executable files
+/kernel the kernel files
+
+Types of files (ls -l)
+first bit (what type of file)
+- regular file (normal data)
+d directory (lists other files)
+c special file (character device file it is a mechanism used for i/o)
+l link (system to make file/dir visible in multiple parts of system file tree)
+s sockets (inter process networking)
+p named pipes (inter process networking without socket)
+b block device (represents a block device)
+
+
+Types of File Systems
+can be classified into disk/tape file systems, network file systems, and special purpose file systems
+* disk file systems
+takes advantage of the disk storage media to randomly address data in a short amount of time. considers the speed of accessing data following what is initially requested and the anticipation that the following data will also be requested. Allows for multi-user/process access
+
+* flash file systems
+considers the special abilities, performance, and restrictions of flash memory devices. a disk file system can use a flash memory device as the underlying storage media but it is much better to use a file system specifically designed for a flash device
+
+* tape file systems
+a file system and tape format designed to store files on tape
+
+* database file system
+instead of, or in addition to a hierarchical structured management, files are identified by their characteristics
+
+* transactional file system
+some programs need to either make multiple file system changes, or if 1+ of the changes fail, make none of the changes. introduces the atomicity guarantee, ensuring that operations inside of a transaction are either all committed or the transaction can be aborted and the system discards all of its partial results. 
+
+* network file system
+a file system that acts as a client for a remote file access protocol, providing access to files on a server
+
+* shared disk file system
+a number of machines all have access to the same external disk subsystem
+
+* special file system
+presents non file elements of an operating system as files so they can be acted on using file system APIs. (commonly done in unix like operating systems)
+
+* minimal file system
+since disk/digital tape devices were too expensive for some early microcomputer users, an inexpensive basic data storage system was devised that used common audio cassette tape. when the system needed to write data the user was notified to press record
+
+* flat file system
+no subdirectories, directory entries for all files are stored in a single entry
+
+The filesystem provides information storage and retrieval (one of the several forms of interprocess communication) 
+A filesystem appears as one rooted tree of directories
+
+- Create a file, modify, copy, move, change permissions
+
+create a file
+
+* echo "asdfaf" > file.txt
+  or
+  printf "asdf" > file.txt
+
+* cat > file.txt
+  typity typify type 
+  ^D (ctrl d)
+
+* vim file.txt
+
+* touch file.txt (creates empty file)
+
+modify a file
+
+* vim file.txt
+
+copy a file
+
+* cp file.txt newfile.txt
+
+* cp file1.txt file2.txt dir (copy multiple files into a directory)
+
+* cp file.txt dir 
+
+* -v flag (verbose see files as they are copied)
+
+* -p flag (preserve the file attributes of the original) 
+
+* -i flag (interactive (prompt users to make any changes if file with name)
+
+* -R flag (recursive copy a directory)
+
+move a file
+
+* mv source dest
+
+* mv -f (force move by overwriting destination file without prompt)
+
+* mv -i (interactive prompt before overwrite(
+
+* mv -u (update move when source is newer than destination)
+
+* mv -v (verbose print source and destination files)
+
+change permissions
+
+* chmod
+
+numeric mode
+(user | group | public)
+4 = r (read)
+2 = w (write)
+1 = x (execute)
+ie: chmod 600 file.txt (rw for user and nothing for rest)
+
+named mode
+
+* who permissions
+** u change user bits
+** g change group bits
+** o change other bits
+** a change bits for everyone
+
+* what permissions
+** r grant read access
+** w grant write access
+** x grant execute access
+** s set the sticky bit
+
+combine with + and - to combine permissions 
+
+format: chmod "groups"+"access" file
+
+chmod a+r file.txt (everyone can read)
+chmod go-rwx file.txt (group and other users and removes all permissions)
+chmod ug+x script.cgi (executable by user and group)
+chmod g+s someday (all files created in directory somedir are owned by group that owns somedir)
+
+-Create a file, Search for a pattern, move the matched pattern segment into a separate file. Post that remove the file you have created. Write a small shell script.
+
+vim testscript.sh
+------------------------ 
+
+#!/bin/sh
+touch file1.txt
+grep '{pattern}' file1.txt > file2.txt
+cat file2.txt
+rm file1.txt
+
+------------------------
+
+to execute: 
+bash filename.sh
+./filename.sh
+
+
+- What is crontab, why we need , how to schedule a job , what the various attribute in scheduling the job. Where the cron file present.
+
+https://en.wikipedia.org/wiki/Cron
+
+crontab command creates a crontab file containing commands and instructions for the cron daemon to execute
+
+the cron daemon is a long running process that executes commands at specific dates and times. use to schedule activities as a one time event or recurring tasks
+
+for commands that need to be executed repeatedly use crontab command
+
+cron is a time based job scheduler, the actions of cron are driven by crontab file (cron table) a config file that specifies shell commands to run periodically on a given schedule
+
+crontab options
+* crontab -a filename (install filename as your crontab file the -a is not necessary)
+
+* crontab -e (edit crontab file or create one if it doesn't already exist)
+
+* crontab -l (display your crontab file)
+
+* crontab -r (remove your crontab file)
+
+* crontab -v (display last time edited crontab file)
+
+* crontab -u user (used in conjunction with other options this option allows you to modify or view the crontab file of user)
+
+crontab file consists of six fields:
+minute(s) hour(s) day(s) month(s) weekday(s) command(s)
+
+minute | 0-59 | exact minute the command sequence executes
+hour | o-23 | hour of the day executes
+day | 1-31 | day of the month command executes
+month | 1-12 | month of the year that the command sequence executes
+weekday | 0-6 | day of the week command sequence executes 0-sunday, 1-monday
+command | complete sequence of commands to execute
+
+patterns in this field: * which are all legal values, or a list of elements separated by commas, an inclusive range using -
+
+users can have their own individual crontab files and there is often a system wide crontab file usually in /etc or a subdirectory of /etc
+
+location of cron file for individual users /var/spool/cron/crontabs/.
+
+- Write about SED and AWK , give examples from each
+
+sed
+
+* stream editor, a unix utility that parses and transforms texts using a simple compact programming language
+* it is used typically as a substitution command ie
+sed 's/regexp/replacement/g' inputfile > output file
+* some versions of sed the expression must be preceded by -e to indicate an expression follows
+* s stands for substitute g stands for global (all matching occurrences in the line would be replaced
+
+awk
+https://en.wikipedia.org/wiki/AWK
+* domain specific language designed for text processing and typically used as a data extraction and reporting tool
+* similar to sed and grep its a filter
+
+- How to see processes, how to find parent and child process, how to kill a process. How do you know there is a deadlock on the process
+
+see processes
+* ps -aux
+
+vivek 43126  0.0  0.0 13160 8452  -  S    10:59   0:00.03 vim
+
+vivek is username
+43126 is the PID
+10:59 start time
+vim is the actual process or command
+
+ps aux | grep <executable name>
+if in output, the PROCESS STATE CODE is D (Uninterruptible sleep) means it is a deadlock. 
+say you have two threads T1 & T2 and two critical sections each protected by semaphores S1 & S2 then if T1 acquires S1 and T2 acquires S2 and after that they try to acquire the other lock before relinquishing the one already held by them, this will lead to a deadlock and on doing a ps aux | grep <exe name>, the process state code will be D (ie Uninterruptible sleep)
+
+* top will show processes taking up most memory
+
+* kill [pid] oil a process 
+
+- Give examples on Cut command , various options available
+cut command in unix is a command for cutting out the sections from each line of files and writing the result to standard output 
+
+https://www.geeksforgeeks.org/cut-command-linux-examples/
+cut -b (to extract specific bytes, need to follow -b with the list of byte numbers separated by commas, ranges can be used with -
+cut -c (cut by character using the column option this can be a list of numbers separated by comma or range by hyphen
+
+- How to set part in unix , where are the environment variables stored etc .. 
+The Global environment variables of your system are stored in /etc/environment.
+Any changes here will get reflected throughout the system and will affect all users of the system. Also, you need a Reboot, for any changes made here to take effect.
+
+User level Environment variables are mostly stored in .bashrc and .profile files in your Home folder. Changes here only affect that particular user. Just close and open the terminal for configuration changes to take place.
+
+10/20-21/2020
+
+PL/SQL Basics
+
+PL/SQL is a combination of SQL along with the procedural features of programming languages. It was developed by Oracle Corporation in the early 90's to enhance the capabilities of SQL. PL/SQL is one of three key programming languages embedded in the Oracle Database, along with SQL itself and Java. This tutorial will give you great understanding on PL/SQL to proceed with Oracle database and other advanced RDBMS concepts.
+
+PL/SQL procedural language for SQL is Oracle Corporation's procedural extension for SQL and the Oracle relational database. PL/SQL is available in Oracle database. 
+
+Includes procedural language elements such as conditions and loops. It allows declaration of constants and variables, procedures and functions, types and variables of those types and triggers. It can handle exceptions. Arrays are supported involving the use of PL/SQL collections. One can create PL/SQL units such as procedures, functions, packages, types, and triggers, which are stored in the database for reuse by applications that use and any of the Oracle Database programmatic interfaces. 
+
+PL/SQL is a procedural language which provides of functionality of decision making, iteration and many more features like other procedural programming languages. 
+
+PL/SQL anonymous block
+* the basic unit of a PL/SQL source program is a block which groups together related declarations and statements. defined by keywords DECLARE, BEGIN, EXCEPTION, and END. 
+
+DECLARE
+-- this section is optional
+  number1 NUMBER(2);
+  number2 number1%TYPE := 17;             -- value default
+  text1   VARCHAR2(12) := 'Hello world';
+  text2   DATE         := SYSDATE;        -- current date and time
+BEGIN
+-- this section is mandatory, must contain at least one executable statement
+  SELECT street_number
+    INTO number1
+    FROM address
+    WHERE name = 'INU';
+EXCEPTION
+-- this section is optional
+   WHEN OTHERS THEN
+     DBMS_OUTPUT.PUT_LINE('Error Code is ' || TO_CHAR(sqlcode));
+     DBMS_OUTPUT.PUT_LINE('Error Message is ' || sqlerrm);
+END;
+
+Function
+* the purpose of a PL/SQL function is generally used to compute and return a single value. May be a single scalar value (such as number, date or character string) or a single collection (such as nested table or array)
+
+CREATE OR REPLACE FUNCTION <function_name> [(input/output variable declarations)] RETURN return_type
+[AUTHID <CURRENT_USER | DEFINER>] <IS|AS>   -- heading part
+amount number;   -- declaration block
+BEGIN   -- executable part
+	<PL/SQL block with return statement>
+        RETURN <return_value>;
+[Exception
+	none]
+        RETURN <return_value>;
+END;
+
+CREATE OR REPLACE FUNCTION <function_name> [(input/output variable declarations)] RETURN return_type
+[AUTHID <CURRENT_USER | DEFINER>] [<AGGREGATE | PIPELINED>] <IS|USING>
+	[declaration block]
+BEGIN
+	<PL/SQL block with return statement>
+        PIPE ROW <return type>;
+        RETURN;
+[Exception
+	exception block]
+        PIPE ROW <return type>;
+        RETURN;
+END;
+
+Procedure
+* named program units that can be invoked repeatedly. The primary difference is that functions can be used in a SQL statement whereas procedures cannot. 
+
+CREATE PROCEDURE create_email_address ( -- Procedure heading part begins
+    name1 VARCHAR2,
+    name2 VARCHAR2,
+    company VARCHAR2,
+    email OUT VARCHAR2
+) -- Procedure heading part ends
+AS
+-- Declarative part begins (optional)
+error_message VARCHAR2(30) := 'Email address is too long.';
+BEGIN -- Executable part begins (mandatory)
+    email := name1 || '.' || name2 || '@' || company;
+EXCEPTION -- Exception-handling part begins (optional)
+WHEN VALUE_ERROR THEN
+    DBMS_OUTPUT.PUT_LINE(error_message);
+END create_email_address;
+
+Package
+* packages are groups of technically linked functions, procedures, variables, PL/SQL table and record TYPE statements, constants, cursors, etc. Promotes code reuse
+* Modular approach, encapsulation/hiding of business logic, security, performance improvement, re-usability. They support object-oriented programming features like function overloading and encapsulation.
+Using package variables one can declare session level (scoped) variables since variables declared in the package specification have a session scope.
+
+Trigger
+* a stored procedure that Oracle Database invokes automatically whenever a specified events occurs. It is a named P:/SQL unit that is stored in the database and can be invoked repeatedly. Unlike a stored procedure, you can enable and disable trigger, but you cannot explicitly invoke it. When a trigger is enabled, the database automatically invokes it whenever the event occurs. 
+*Triggers can be written for the following purposes:
+**Generating some derived column values automatically
+**Enforcing referential integrity
+**Event logging and storing information on table access
+**Auditing
+**Synchronous replication of tables
+**Imposing security authorizations
+**Preventing invalid transactions
+
+Data Types
+
+* Numeric 
+** variable_name number([P, S]) := 0;
+** binary_float
+** binary_double
+** dec
+** decimal
+** double precision
+** float
+** integer
+** int
+** numeric
+** real
+** small-int
+** binary_integer
+
+*Character
+** variable_name varchar2(20) := 'Text';
+** archer
+** char
+** long
+** raw
+** long raw
+** char
+** nchar2
+** club
+** blob
+** bfile
+
+*Date
+** variable_name date := to_date('01-01-2005 14:20:23', 'DD-MM-YYYY hh24:mi:ss');
+
+variable_name Table_name.Column_name%type;
+
+conditional statements
+
+*if then
+   sequence_of_statements_1;
+ELSIF x = 2 THEN
+   sequence_of_statements_2;
+ELSIF x = 3 THEN
+   sequence_of_statements_3;
+ELSIF x = 4 THEN
+   sequence_of_statements_4;
+ELSIF x = 5 THEN
+   sequence_of_statements_5;
+ELSE
+   sequence_of_statements_N;
+END IF;
+
+* case 
+CASE
+   WHEN x = 1 THEN sequence_of_statements_1;
+   WHEN x = 2 THEN sequence_of_statements_2;
+   WHEN x = 3 THEN sequence_of_statements_3;
+   WHEN x = 4 THEN sequence_of_statements_4;
+   WHEN x = 5 THEN sequence_of_statements_5;
+   ELSE sequence_of_statements_N;
+END CASE;
+
+PL/SQL refers to arrays as "collections". The language offers three types of collections:
+
+Associative arrays (Index-by tables)
+Nested tables
+Varrays (variable-size arrays)
+Programmers must specify an upper limit for varrays, but need not for index-by tables or for nested tables. The language includes several collection methods used to manipulate collection elements: for example FIRST, LAST, NEXT, PRIOR, EXTEND, TRIM, DELETE, etc. Index-by tables can be used to simulate associative arrays, as in this example of a memo function for Ackermann's function in PL/SQL.
+
+Associative arrays (index-by tables)
+With index-by tables, the array can be indexed by numbers or strings. It parallels a Java map, which comprises key-value pairs. There is only one dimension and it is unbounded.
+
+Nested tables
+With nested tables the programmer needs to understand what is nested. Here, a new type is created that may be composed of a number of components. That type can then be used to make a column in a table, and nested within that column are those components.
+
+Varrays (variable-size arrays)
+With Varrays you need to understand that the word "variable" in the phrase "variable-size arrays" doesn't apply to the size of the array in the way you might think that it would. The size the array is declared with is in fact fixed. The number of elements in the array is variable up to the declared size. Arguably then, variable-sized arrays aren't that variable in size.
+
+Cursors
+A cursor is a mechanism, pointer to a private SQL area that stores information coming from a SELECT or data manipulation language (DML) statement (INSERT, UPDATE, DELETE, or MERGE). A cursor holds the rows (one or more) returned by a SQL statement. The set of rows the cursor holds is referred to as the active set.[12]
+
+A cursor can be explicit or implicit. In a FOR loop, an explicit cursor shall be used if the query will be reused, otherwise an implicit cursor is preferred. If using a cursor inside a loop, use a FETCH is recommended when needing to bulk collect or when needing dynamic SQL.
+
+Looping
+As a procedural language by definition, PL/SQL provides several iteration constructs, including basic LOOP statements, WHILE loops, FOR loops, and Cursor FOR loops. Since Oracle 7.3 the REF CURSOR type was introduced to allow recordsets to be returned from stored procedures and functions. Oracle 9i introduced the predefined SYS_REFCURSOR type, meaning we no longer have to define our own REF CURSOR types.
+
+LOOP statements
+<<parent_loop>>
+LOOP
+	statements
+
+	<<child_loop>>
+	loop
+		statements
+		exit parent_loop when <condition>; -- Terminates both loops
+		exit when <condition>; -- Returns control to parent_loop
+	end loop child_loop;
+        if <condition> then
+           continue; -- continue to next iteration
+        end if;
+
+	exit when <condition>;
+END LOOP parent_loop;
+
+
+Loops can be terminated by using the EXIT keyword, or by raising an exception.
+
+FOR loops
+DECLARE
+    var NUMBER;
+BEGIN
+    /* N.B. for loop variables in PL/SQL are new declarations, with scope only inside the loop */
+    FOR var IN 0 .. 10 LOOP
+        DBMS_OUTPUT.PUT_LINE(var);
+    END LOOP;
+
+    IF var IS NULL THEN
+        DBMS_OUTPUT.PUT_LINE('var is null');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('var is not null');
+    END IF;
+END;
+Output:
+
+ 0
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+ 10
+ var is null
+
+Cursor FOR loops
+
+FOR RecordIndex IN (SELECT person_code FROM people_table)
+LOOP
+  DBMS_OUTPUT.PUT_LINE(RecordIndex.person_code);
+END LOOP;
+
+Cursor-for loops automatically open a cursor, read in their data and close the cursor again.
+
+As an alternative, the PL/SQL programmer can pre-define the cursor's SELECT-statement in advance to (for example) allow re-use or make the code more understandable (especially useful in the case of long or complex queries).
+
+DECLARE
+  CURSOR cursor_person IS
+    SELECT person_code FROM people_table;
+BEGIN
+  FOR RecordIndex IN cursor_person
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(recordIndex.person_code);
+  END LOOP;
+END;
+
+The concept of the person_code within the FOR-loop gets expressed with dot-notation ("."):
+
+- normalization
+
+normalization is a database design technique that reduces data redundancy and eliminates undesirable characteristics such as insertion, update, and deletion anomalies. Normalization rules divides larger tables into smaller tables and links them using relationships. The purpose of Normalization in SQL is to eliminate redundant (repetitive) data and ensure data is stored logically.
+
+
+*normal forms
+1NF (First Normal Form)
+2NF (Second Normal Form)
+3NF (Third Normal Form)
+BCNF (Boyce-Codd Normal Form)
+4NF (Fourth Normal Form)
+5NF (Fifth Normal Form)
+
+
+(third is the best)
+
+1NF (First Normal Form) Rules
+Each table cell should contain a single value.
+Each record needs to be unique.
+
+2NF (Second Normal Form) Rules
+Rule 1- Be in 1NF
+Rule 2- Single Column Primary Key
+
+3NF (Third Normal Form) Rules
+Rule 1- Be in 2NF
+Rule 2- Has no transitive functional dependencies
+
+transitive functional dependencies: when changing a non key column might cause other non key columns to change
+
+BCNF (Boyce-Codd Normal Form)
+Even when a database is in 3rd Normal Form, still there would be anomalies resulted if it has more than one Candidate Key.
+
+4NF (Fourth Normal Form) Rules
+If no database table instance contains two or more, independent and multivalued data describing the relevant entity, then it is in 4th Normal Form.
+
+5NF (Fifth Normal Form) Rules
+A table is in 5th Normal Form only if it is in 4NF and it cannot be decomposed into any number of smaller tables without loss of data.
+
+- DEnormalization
+
+Oracle was one of the first databases to introduce tools for planned data denormalization. As hard drives became cheaper throughout the 1990s, Oracle recognized that significant performance improvements could be introduced by deliberately introducing redundant data items into the Oracle table and index structures.
+
+Denormalization is a database optimization technique in which we add redundant data to one or more tables. This can help us avoid costly joins in a relational database. Note that denormalization does not mean not doing normalization. It is an optimization technique that is applied after doing normalization.
+
+In a traditional normalized database, we store data in separate logical tables and attempt to minimize redundant data. We may strive to have only one copy of each piece of data in database.
+For example, in a normalized database, we might have a Courses table and a Teachers table.Each entry in Courses would store the teacherID for a Course but not the teacherName. When we need to retrieve a list of all Courses with the Teacher name, we would do a join between these two tables.
+In some ways, this is great; if a teacher changes is or her name, we only have to update the name in one place.
+The drawback is that if tables are large, we may spend an unnecessarily long time doing joins on tables.
+Denormalization, then, strikes a different compromise. Under denormalization, we decide that we’re okay with some redundancy and some extra effort to update the database in order to get the efficiency advantages of fewer joins.
+
+Pros of Denormalization:-
+Retrieving data is faster since we do fewer joins
+Queries to retrieve can be simpler(and therefore less likely to have bugs),
+since we need to look at fewer tables.
+
+Cons of Denormalization:-
+Updates and inserts are more expensive.
+Denormalization can make update and insert code harder to write.
+Data may be inconsistent . Which is the “correct” value for a piece of data?
+Data redundancy necessitates more storage.
+
+- DDL
+
+Data Definition Language 
+
+Purpose of DDL:
+Create, alter, and drop schema objects
+Grant and revoke privileges and roles
+Analyze information on a table, index, or cluster
+Establish auditing options
+Add comments to the data dictionary
+
+
+* CREATE        :Use to create objects like CREATE TABLE, CREATE FUNCTION,
+                        CREATE SYNONYM, CREATE VIEW. Etc.
+
+Example
+
+To create a table, you can give the following statement
+
+create table emp (empno number(5) primary key,
+                   name varchar2(20),
+                   sal number(10,2),
+                   job varchar2(20),
+                   mgr  number(5),
+                   Hiredate  date,
+                   comm number(10,2));
+
+create table tax (empno number(5), tax number(10,2));
+insert into tax select empno,(sal-5000)*0.40
+                     from emp where sal > 5000;
+
+create table tax as select empno,(sal-5000)*0.4
+   as tax from emp where sal>5000
+
+create table emp2 as select * from emp;
+
+create table emp2 as select * from emp where 1=2;
+
+
+* ALTER           :Use to Alter Objects like ALTER TABLE, ALTER USER, ALTER
+                         TABLESPACE, ALTER DATABASE. Etc.
+
+Examples:
+
+To add  new columns addr, city, pin, ph, fax to employee table you can give the following statement
+
+alter table emp add (addr varchar2(20), city varchar2(20),
+      pin varchar2(10),ph varchar2(20));
+
+To modify the datatype and width of a column. For example we you want to increase the length of the column ename from varchar2(20) to varchar2(30) then give the following command.
+
+alter table emp modify (ename varchar2(30))
+
+To decrease the width of a column the column can be decreased up to largest value it holds.
+
+alter table emp modify (ename varchar2(15));
+
+alter table emp drop column (pin, city);
+
+Remember you cannot drop the column if the table is having only one column.
+
+If the column you want to drop is having primary key constraint on it then you have to give cascade constraint clause.
+
+* DROP             :Use to Drop Objects like DROP TABLE, DROP USER, DROP
+                        TABLESPACE, DROP FUNCTION. Etc.
+
+drop table emp2;
+
+drop table emp2 cascade constraints;
+
+* REPLACE      :Use to Rename table names.
+
+rename emp2 to employee2
+
+* TRUNCATE   :Use to truncate (delete all rows) a table.
+
+Use the Truncate statement to delete all the rows from table permanently . It is same as “DELETE FROM <table_name>” except
+
+Truncate does not generate any rollback data hence, it cannot be roll backed.
+
+If any delete triggers are defined on the table. Then the triggers are not fired
+
+It deallocates free extents from the table. So that the free space can be use by other tables.
+
+Example
+
+truncate table emp;
+
+If you do not want free space and keep it with the table. Then specify the REUSE storage clause like this
+
+truncate table emp reuse storage;
+
+- DML
+
+DML stands for Data Manipulation Language. These statements are mainly used to perform the manipulation activity. It deals with the below operations:
+
+* Data Insertion
+Syntax:
+
+BEGIN
+  INSERT INTO <table_name>(<column1 >,<column2>,...<column_n>)
+     VALUES(<valuel><value2>,...:<value_n>);
+END;
+
+The above syntax shows the INSERT INTO command. The table name and values are a mandatory fields, whereas column names are not mandatory if the insert statements have values for all the column of the table.
+The keyword 'VALUES' is mandatory if the values are given separately as shown above.
+
+
+Syntax:
+
+BEGIN
+  INSERT INTO <table_name>(<columnl>,<column2>,...,<column_n>)
+     SELECT <columnl>,<column2>,.. <column_n> FROM <table_name2>;
+END;
+
+The above syntax shows the INSERT INTO command that takes the values directly from the <table_name2> using the SELECT command.
+The keyword 'VALUES' should not be present in this case as the values are not given separately.
+
+* Data Update
+
+Data update simply means an update of the value of any column in the table. This can be done using 'UPDATE' statement. This statement takes the table name, column name and value as the input and updates the data.
+
+Syntax:
+
+BEGIN	
+  UPDATE <table_name>
+  SET <columnl>=<VALUE1>,<column2>=<value2>,<column_n>=<value_n> 
+  WHERE <condition that uniquely identifies the record that needs to be update>; 
+END;
+
+The above syntax shows the UPDATE. The keyword 'SET' instruct that PL/SQL engine to update the value of the column with the value given.
+'WHERE' clause is optional. If this clause is not given, then the value of the mentioned column in the entire table will be updated.
+
+* Data Deletion
+
+Data deletion means to delete one full record from the database table. The 'DELETE' command is used for this purpose.
+
+Syntax:
+
+BEGIN
+  DELETE
+  FROM
+  <table_name>
+  WHERE <condition that uniquely identifies the record that needs to be update>; 
+END;
+
+The above syntax shows the DELETE command. The keyword 'FROM' is optional and with or without 'FROM' clause the command behaves in the same way.
+'WHERE' clause is optional. If this clause is not given, then the entire table will be deleted.
+
+* Data Selection
+
+Data projection/fetching means to retrieve the required data from the database table. This can be achieved by using the command 'SELECT' with 'INTO' clause. The 'SELECT' command will fetch the values from the database, and 'INTO' clause will assign these values to the local variable of the PL/SQL block.
+
+Below are the points that need to be considered in 'SELECT' statement.
+
+'SELECT' statement should return only one record while using 'INTO' clause as one variable can hold only one value. If the 'SELECT' statement returns more than one value than 'TOO_MANY_ROWS' exception will be raised.
+'SELECT' statement will assign the value to the variable in the 'INTO' clause, so it needs to get at least one record from the table to populate the value. If it didn't get any record, then the exception 'NO_DATA_FOUND' is raised.
+The number of columns and their datatype in 'SELECT' clause should match with the number of variables and their datatypes in the 'INTO' clause.
+The values are fetched and populated in the same order as mentioned in the statement.
+'WHERE' clause is optional that allows to having more restriction on the records that are going to be fetched.
+'SELECT' statement can be used in the 'WHERE' condition of other DML statements to define the values of the conditions.
+The 'SELECT' statement when using 'INSERT', 'UPDATE', 'DELETE' statements should not have 'INTO' clause as it will not populate any variable in these cases.
+
+Syntax:
+
+BEGIN
+  SELECT <columnl>,..<column_n> INTO <vanable 1 >,. .<variable_n> 
+   FROM <table_name>
+   WHERE <condition to fetch the required records>;
+END;
+
+The above syntax shows the SELECT-INTO command. The keyword 'FROM' is mandatory that identifies the table name from which the data needs to be fetched.
+'WHERE' clause is optional. If this clause is not given, then the data from the entire table will be fetched.
+
+- DCL
+
+Data Control Language
+
+DCL is the language that enables or disables a user’s ability to perform tasks within Oracle. A user account without privileges has no functionality. The user cannot even log on to Oracle. This requires a privilege called CREATE SESSION. There are two types of privileges:
+
+1. System privileges	Allow a user to perform DDL commands (e.g., CREATE TABLE, DROP INDEX)
+2. Object privileges	Allow a user to issue DML commands (e.g., INSERT, UPDATE)
+
+Grant
+privilege, privilege, privilege
+[on object name]
+To
+user account;
+
+- TCL
+
+TCL stands for Transaction Control Statements. It will either save the pending transactions or roll back the pending transaction. These statements play the vital role because unless the transaction is saved the changes through DML statements will not be saved in the database. Below are the different TCL statements.
+
+Transactions are completed WHEN
+When any of the above statements is issued (except SAVEPOINT)
+When DDL statements are issued. (DDL are auto-commit statements)
+WHEN DCL statements are issued. (DCL are auto-commit statements)
+
+* COMMIT	Saves all the pending transaction
+
+* ROLLBACK	Discard all the pending transaction
+
+* SAVEPOINT	Creates a point in the transaction till which rollback can be done later
+
+* ROLLBACK TO	Discard all the pending transaction till the specified <save point>
+
+- Triggers
+
+Triggers are, in fact, written to be executed in response to any of the following events −
+
+* A database manipulation (DML) statement (DELETE, INSERT, or UPDATE)
+* A database definition (DDL) statement (CREATE, ALTER, or DROP).
+* A database operation (SERVERERROR, LOGON, LOGOFF, STARTUP, or SHUTDOWN).
+
+Triggers can be defined on the table, view, schema, or database with which the event is associated.
+
+Triggers can be written for the following purposes −
+
+Generating some derived column values automatically
+Enforcing referential integrity
+Event logging and storing information on table access
+Auditing
+Synchronous replication of tables
+Imposing security authorizations
+Preventing invalid transactions
+
+The syntax for creating a trigger is −
+
+CREATE [OR REPLACE ] TRIGGER trigger_name  
+{BEFORE | AFTER | INSTEAD OF }  
+{INSERT [OR] | UPDATE [OR] | DELETE}  
+[OF col_name]  
+ON table_name  
+[REFERENCING OLD AS o NEW AS n]  
+[FOR EACH ROW]  
+WHEN (condition)   
+DECLARE 
+   Declaration-statements 
+BEGIN  
+   Executable-statements 
+EXCEPTION 
+   Exception-handling-statements 
+END; 
+Where,
+
+* CREATE [OR REPLACE] TRIGGER trigger_name − Creates or replaces an existing trigger with the trigger_name.
+
+* {BEFORE | AFTER | INSTEAD OF} − This specifies when the trigger will be executed. The INSTEAD OF clause is used for creating trigger on a view.
+
+* {INSERT [OR] | UPDATE [OR] | DELETE} − This specifies the DML operation.
+
+* [OF col_name] − This specifies the column name that will be updated.
+
+* [ON table_name] − This specifies the name of the table associated with the trigger.
+
+* [REFERENCING OLD AS o NEW AS n] − This allows you to refer new and old values for various DML statements, such as INSERT, UPDATE, and DELETE.
+
+* [FOR EACH ROW] − This specifies a row-level trigger, i.e., the trigger will be executed for each row being affected. Otherwise the trigger will execute just once when the SQL statement is executed, which is called a table level trigger.
+
+* WHEN (condition) − This provides a condition for rows for which the trigger would fire. This clause is valid only for row-level triggers.
+
+example:
+CREATE OR REPLACE TRIGGER display_salary_changes 
+BEFORE DELETE OR INSERT OR UPDATE ON customers 
+FOR EACH ROW 
+WHEN (NEW.ID > 0) 
+DECLARE 
+   sal_diff number; 
+BEGIN 
+   sal_diff := :NEW.salary  - :OLD.salary; 
+   dbms_output.put_line('Old salary: ' || :OLD.salary); 
+   dbms_output.put_line('New salary: ' || :NEW.salary); 
+   dbms_output.put_line('Salary difference: ' || sal_diff); 
+END; 
+
+- Cursors
+
+- Views
+
+A View is a virtual relation that acts as an actual relation. It is not a part of logical relational model of the database system. Tuples of the view are not stored in the database system and tuples of the view are generated every time the view is accessed. Query expression of the view is stored in the databases system.
+
+Views can be used everywhere were we can use the actual relation. Views can be used to create custom virtual relations according to the needs of a specific user. We can create as many views as we want in a databases system.
+
+Materialized Views:
+When the results of a view expression are stored in a database system, they are called materialized views. SQL does not provides any standard way of defining materialized view, however some database management system provides custom extensions to use materialized views. The process of keeping the materialized views updated is know as view maintenance.
+
+Database system uses one of the three ways to keep the materialized view updated:
+
+Update the materialized view as soon as the relation on which it is defined is updated.
+Update the materialized view every time the view is accessed.
+Update the materialized view periodically.
+Materialized view is useful when the view is accessed frequently, as it saves the computation time, as the result are stored in the database before hand. Materialized view can also be helpful in case where the relation on which view is defined is very large and the resulting relation of the view is very small. Materialized view has storage cost and update overheads associated with it.
+
+- Constraints
+
+NOT NULL - Ensures that a column cannot have a NULL value
+UNIQUE - Ensures that all values in a column are different
+PRIMARY KEY - A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table
+FOREIGN KEY - Uniquely identifies a row/record in another table
+CHECK - Ensures that all values in a column satisfies a specific condition
+DEFAULT - Sets a default value for a column when no value is specified
+INDEX - Used to create and retrieve data from the database very quickly
+
+- Indexing
+
+- Backup
+
+- Housekeeping
+
+- BCK/Restore/Critical releases
+
+- NoSQL
+
+- Database tuning
+
+- query debugging
+
+- Query planning
+
+- Order of execution of a Query
+
+*FROM/JOIN
+*WHERE
+*GROUP BY
+*HAVING
+*SELECT
+*DISTINCT
+*ORDER BY
+*LIMIT/OFFSET
+
+
+
+
