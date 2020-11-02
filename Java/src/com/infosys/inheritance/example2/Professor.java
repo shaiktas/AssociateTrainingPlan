@@ -1,4 +1,4 @@
-package com.infosys.example2;
+package com.infosys.inheritance.example1.example2;
 
 public class Professor {
 

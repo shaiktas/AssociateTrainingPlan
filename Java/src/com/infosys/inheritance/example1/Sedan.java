@@ -1,4 +1,4 @@
-package com.infosys.example1;
+package com.infosys.inheritance.example1;
 
 public class Sedan extends Vehicle {
 
