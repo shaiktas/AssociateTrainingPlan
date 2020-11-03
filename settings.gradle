@@ -1,0 +1,8 @@
+rootProject.name = 'AssociateTrainingPlan'
+
+include 'Java'
+include 'Springboot'
+//inlcude 'Unix_PLSQL'
+
+//project
+
