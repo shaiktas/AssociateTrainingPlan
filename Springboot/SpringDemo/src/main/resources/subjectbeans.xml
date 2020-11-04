@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<bean id="compTeacher" class = "com.spring.ioc.example.Teacher">
+	<property name="name" value= "Mr. Coreman"></property>
+	<property name="mobileNo" value = "666 222 1111"></property>
+</bean>
+
+<bean id="elecTeacher" class = "com.spring.ioc.example.Teacher">
+	<property name="name" value= "Mr. Theraja"></property>
+	<property name="mobileNo" value = "666 333 4444"></property>
+</bean>
+
+
+<bean id = "computer" class = "com.spring.ioc.example.ComputerScience">
+	<property name="name" value= "Algorithm"></property>
+	<property name="teacher" ref = "compTeacher"></property>
+</bean> 
+
+<bean id = "electronics" class = "com.spring.ioc.example.Electronics">
+	<property name="name" value= "Basic Electronics"></property>
+	<property name="teacher" ref = "elecTeacher"></property>
+</bean> 
+
+</beans>
