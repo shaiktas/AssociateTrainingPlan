@@ -1,0 +1,102 @@
+create table Player (PId INTEGER constraint pid_pk PRIMARY KEY, PName VARCHAR2(20) constraint pn_nn NOT NULL, Ranking INTEGER);
+
+create table Tournament (TId INTEGER constraint tid_pk PRIMARY KEY, TName VARCHAR2(30) constraint tname_nn NOT NULL, 
+StartDt DATE constraint startdt_nn NOT NULL, EndDt DATE constraint enddt_nn NOT NULL, PRIZE INTEGER constraint prize_nn NOT NULL);
+
+create table Match(
+MId INTEGER,
+TId INTEGER,
+Player1 INTEGER,
+Player2 INTEGER,
+MatchDt DATE NOT NULL,
+Winner INTEGER,
+Score VARCAR2(30) NOT NULL,
+CONSTRAINT match_pk PRIMARY KEY(MId, TId),
+CONSTRAINT tour_fk FOREIGN KEY (TId) REFERENCES Tournament(TId),
+CONSTRAINT player1_fk FOREIGN KEY (Player1) REFERENCES Player(PId),
+CONSTRAINT player2_fk FOREIGN KEY (Player2) REFERENCES Player(PId),
+CONSTRAINT player_ck CHECK (Player1 <> Player2),
+CONSTRAINT winner_fk FOREIGN KEY (Winner) REFERENCES Player(PId));
+
+
+Entity integrity rule - primary key
+Domain integrity rule - check, not null
+referential integrity - 
+
+DDL(data definition lang) - create, drop, alter, truncate
+DML(data management lang) - insert, delete, update, merge
+DCL(data control lang) - grant, revoke
+TCL(transaction control lang) - commit, rollback, savepoint
+
+Normalization - the process of identifying the proper attritubes to use in a relation
+		i.e.) non-key and key values shouldn't be dependent on other non-keys 
+
+Index - lookup table that database search engine can use to retrieve data quicker (a pointer to table data)
+Indexing - using indexes to help sort data
+
+SQL(Structure Query Lang) vs NOSQL(No Structure Query Lang)
+		SQL has structure
+		NOSQL does not have structure to it 
+
+Database House-Keeping - refers to indexing/reorganizing, checking its integrity, checking backups, and updating table stats
+
+Database Tuning - the act of optimizing and homogenizing the db, with respect to the design of db files and the 
+		config of processing resources
+			This could involve setting network protocols, assigning parrallelism, configuring cache size, etc.
+			It could also involve utilizing built-in tools such as the 
+				EXPLAIN PLAN clause - shows the path that will be taken when the statement/procedure is executed
+				or TKPROF - measures performance by time elapsed during each phase of statement processing
+
+Procedure - group of SQL statements that are all executed when "group" is called
+
+Query Plan is a set of exact steps that the dbms executes in order to complete the given query
+		Query Planning decides the most optimized/efficient way to execute a query based on the data and time cost of
+			said query
+
+Pre/Post Compilation refers to when statement parsing, syntax checking, and query planning are done
+		Those 3 things are done only once when statements are pre-compiled (meaning you can successively call the same statements
+			with different variables for much faster execution)
+		?And done for each and every statement (similar or not) when post-compiled
+
+Trigger - a stored SQL program that gets implicitly fired when a triggering event occurs
+		DML Trigger performs a specific service when a certain DML operation
+			Statement Trigger is DEFAULT trigger type and fires one time when triggering event occurs
+			Row Trigger is activated by using TRIGGER FOR EACH ROW clause and fires for each row affected 
+				by the triggering event
+		Application Trigger fires when a certain event occurs with a particular app
+
+Package is a schema object that contains related functions/methods (like is class in Java)
+		Specification - list of public methods and global variables in package
+		Package Body - impl of the methods and any private methods
+		This introduces modularity/encapsulation
+		And performance is better due to the entire package loading into memory when the package is first
+			referenced, only one copy existing for all users, and simplifying dependency
+
+
+
+select count(*) FROM emp GROUP BY deptno HAVING avg(sal)>30000;
+
+select ename FROM emp INNER JOIN dept ON emp.deptno = dept.deptno WHERE location = 'NEW YORK'; (INNER JOIN)
+
+select dname FROM dept d INNER JOIN emp e ON d.deptno = e.deptno WHERE e.job = 'MANAGER' (CONDITIONAL INNER JOIN)
+
+select m.ename, s.ename FROM emp m INNER JOIN emp s ON m.ename=s.mgr; (SELF JOIN)
+
+Ex 17: select sm.sid, sm.sname, nvl(sum(p.price*sd.quantity),0) "TAMOUNT", 
+	nvl(sum(p.price*p.discount*sd.quantity/100),0) "TDISCOUNT" FROM 
+	Salesman sm LEFT OUTER JOIN Sale s ON sm.sid=s.sid 
+	LEFT OUTER JOIN Saledetail sd ON s.saleid=sd.saleid 
+	LEFT OUTER JOIN Product p ON sd.prodid=p.prodid 
+	GROUP BY sm.sid, sm.sname;
+
+Ex 18: select e.id, e.ename, m.id "MGRID", m.ename "MGRNAME", ec.model "E_MODEL", mc.model "M_MODEL" 
+	FROM Employee e LEFT OUTER JOIN Computer ec ON e.compid=ec.compid 
+	LEFT OUTER JOIN Employee m ON e.manager=m.id 
+	INNER JOIN Computer mc ON m.compid=mc.compid;
+
+Assg 18: select q.itemcode, q.sname, sum(o.qtyordered) "TOTALQUANTITY" FROM 
+	Quotation q INNER JOIN Orders o ON q.quotationid=o.quotationid 
+	WHERE q.qstatus='Closed' GROUP BY q.itemcode, q.sname;
+
+Assg 19: select e.empname, e.designation, e.emailid FROM Empdetails e INNER JOIN Retailoutlet r 
+	ON e.worksin=r.roid and e.empname!='George' and e.worksin='R1001';
