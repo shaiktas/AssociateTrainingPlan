@@ -1,0 +1,73 @@
+/**
+ * 
+ * @author venkatesh.voddem
+ *
+ */
+public class Sychronization {
+		
+	public static void main(String[] args) {
+		Table obj = new Table();
+		
+		T1 obj1 = new T1(obj);  // Thread--1
+		obj1.setName("Thread-1");
+		obj1.start();
+		
+		T2 obj2 = new T2(obj); // Thread--2
+		obj2.setName("Thread-2");
+		obj2.start();
+
+		
+		T3 obj3 = new T3(obj); // Thread--3
+		obj3.setName("Thread-3");
+		obj3.start();
+	}
+}
+		
+class T1 extends Thread{
+	Table t;
+	
+	T1(Table t){
+		this.t = t;
+	}
+	public void run() {
+		t.Synchro(5);
+	}
+
+	}
+class T2 extends Thread{
+    Table t;
+    
+    T2(Table t){
+		this.t = t;
+}
+    public void run() {
+		t.Synchro(10);
+	}
+    
+}
+class T3 extends Thread{
+    Table t;
+    
+    T3(Table t){
+		this.t = t;
+}
+    public void run() {
+		t.Synchro(15);
+	}
+    
+}
+
+class Table {
+	synchronized void Synchro(int n) {  // Using Synchronization Block executing one thread after another.
+		for(int i = 0; i <= 10; i++) {
+			System.out.println(n * i + " executed by "+ Thread.currentThread().getName());
+		}
+		try {
+			Thread.sleep(1000);	
+		}
+		catch(Exception e){
+			System.out.println("sleep");
+		}
+	}
+
+}
