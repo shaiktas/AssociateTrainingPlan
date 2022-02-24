@@ -1,0 +1,72 @@
+/**
+* @author Venkatesh
+*/
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadAn {
+
+	public static void main(String[] args) {
+		ThreadEx obj = new ThreadEx();
+		obj.start();
+		ThreadEx2 obj1 = new ThreadEx2();
+		obj1.start();
+		
+	    new Thread() {
+			@override
+			public void run() {
+				System.out.println("This is anonymous class run method"+Thread.currentThread().getName());
+			}
+		}.start();
+		// Lamda Expression 
+		new Thread(() -> System.out.println("This is another anonymous class run method"+Thread.currentThread().getName())).start();
+		
+		new Thread(() -> {
+			
+			System.out.println("This is another Lamda expression");
+		}
+				).start();
+		
+		new Thread(new Runnable() {
+			public void run() {
+				System.out.println("runnable class method"+Thread.currentThread().getName());
+			}
+		}).start();
+		
+		int numOfThreads = 5;
+		int numOfTasks = 10;
+		// Using Executor service we can assign task for pool of thread.
+		ExecutorService service = Executors.newFixedThreadPool(numOfThreads);
+		for(int i = 0; i < numOfTasks; i++) {
+			
+		service.execute(() -> {
+			
+				System.out.println("This is a task assigned to each thread "+Thread.currentThread().getName());
+				try {
+					Thread.sleep(2000);
+				}catch(Exception e){
+					System.out.println("Sleeping please dont disturb");
+				}
+		}); }
+		
+		try {
+			Thread.sleep(100);
+			
+		}catch(Exception e) {
+			System.out.println();
+		}
+		service.shutdown();
+		
+		}
+	
+}
+class ThreadEx extends Thread{
+	public void run() {
+		System.out.println("This is a run method"+Thread.currentThread().getName());
+	}
+}
+class ThreadEx2 extends Thread{
+	public void run() {
+		System.out.println("This is a Thread-2 task"+Thread.currentThread().getName());
+	}
+}
